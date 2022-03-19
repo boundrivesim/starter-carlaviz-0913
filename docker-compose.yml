@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  server:
+    image: 'doganulus/carla-server:0.9.13'
+    # build: ./server
+    restart: unless-stopped
+    container_name: carla-server
+    entrypoint:
+      [
+        "/opt/carla-simulator/CarlaUE4.sh",
+        "-nullrhi",
+        "-nosound"
+      ]
+    ports:
+      - '2000-2002:2000-2002'
+    networks:
+      - carlasim
+
+  carlaviz:
+    image: 'mjxu96/carlaviz:0.9.13'
+    restart: unless-stopped
+    container_name: carlaviz
+    environment:
+      - CARLAVIZ_BACKEND_HOST=localhost
+      - CARLA_SERVER_HOST=server
+      - CARLA_SERVER_PORT=2000
+    ports:
+      - 8080-8081:8080-8081
+      - 8089:8089
+    depends_on:
+      - server
+    entrypoint: [ "/bin/bash", "./docker/run.sh" ]
+    networks:
+      - carlasim
+
+networks:
+  carlasim:
+    name: carlasim-network
