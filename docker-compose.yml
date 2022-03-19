@@ -33,6 +33,7 @@ services:
     entrypoint: [ "/bin/bash", "./docker/run.sh" ]
     networks:
       - carlasim
+    profiles: [ "carlaviz" ]
 
 networks:
   carlasim:
